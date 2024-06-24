@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Ispit.Todo.Data.Models.TodoList>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Korisnički profil</h2>
+
+<p>Welcome, @User.Identity.Name!</p>
+
+<h3>Your Todo Lists</h3>
+<form method="post" asp-controller="Todo" asp-action="CreateTodoList">
+    <input type="text" name="name" placeholder="New Todo List" />
+    <button type="submit" class="btn btn-primary">Create</button>
+    @Html.AntiForgeryToken()
+</form>
+
+<ul>
+    @foreach (var todoList in Model)
+    {
+        <li>
+            <h4>@todoList.Name</h4>
+            <form method="post" asp-page-handler="CreateTask">
+                <input type="text" name="description" placeholder="New Task" />
+                <button type="submit" class="btn btn-primary">Add Task</button>
+                <input type="hidden" name="todoListId" value="@todoList.Id" />
+            </form>
+            <ul>
+                @foreach (var task in todoList.Tasks)
+                {
+                    <li>
+                        @task.Description - @(task.Status ? "Completed" : "Pending")
+                    </li>
+                }
+            </ul>
+        </li>
+    }
+</ul>
